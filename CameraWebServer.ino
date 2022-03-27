@@ -45,7 +45,7 @@ void configCamera(){
     config.pin_sscb_scl = SIOC_GPIO_NUM;
     config.pin_pwdn = PWDN_GPIO_NUM;
     config.pin_reset = RESET_GPIO_NUM;
-    config.xclk_freq_hz = 20000000;
+    config.xclk_freq_hz = 10000000;
     config.pixel_format = PIXFORMAT_JPEG;
 
     // Select lower framesize if the camera doesn't support PSRAM
@@ -56,7 +56,7 @@ void configCamera(){
     } 
     else {
         config.frame_size = FRAMESIZE_QVGA;
-        config.jpeg_quality = 12;
+        config.jpeg_quality = 30;
         config.fb_count = 1;
     }
 
@@ -185,15 +185,12 @@ void loop() {
               Serial.println("Frame buffer could not be acquired");
               return;
           }
-          String fb_encoded = base64::encode((uint8_t *) fb->buf, fb->len);
-  
-          // Create JSON-String
-          String strPayload = "{\"type\" : \"frame\", \"data\" : \"" + fb_encoded + "\" }";
-  
-          //Send serialized JSON to webSocket
-          uint8_t* payload =  (uint8_t *)strPayload.c_str();
-          webSocket.broadcastBIN(payload, strPayload.length()); // Broadcast can opened in many IPs
-  
+          webSocket.broadcastBIN(fb->buf, fb->len); // Broadcast can opened in many IPs
+          
+//          String fb_encoded = base64::encode((uint8_t *) fb->buf, fb->len);
+//          uint8_t* payload =  (uint8_t *)fb_encoded.c_str();
+//          webSocket.broadcastBIN(payload, fb_encoded.length()); 
+          
           //return the frame buffer back to be reused
           esp_camera_fb_return(fb);
     }
