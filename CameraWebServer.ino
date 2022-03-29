@@ -45,13 +45,13 @@ void configCamera(){
     config.pin_sscb_scl = SIOC_GPIO_NUM;
     config.pin_pwdn = PWDN_GPIO_NUM;
     config.pin_reset = RESET_GPIO_NUM;
-    config.xclk_freq_hz = 10000000;
+    config.xclk_freq_hz = 15000000;
     config.pixel_format = PIXFORMAT_JPEG;
 
     // Select lower framesize if the camera doesn't support PSRAM
     if(psramFound()){
         config.frame_size = FRAMESIZE_VGA; // FRAMESIZE_ + QVGA|CIF|VGA|SVGA|XGA|SXGA|UXGA
-        config.jpeg_quality = 30; //10-63 lower number means higher quality
+        config.jpeg_quality = 12; //10-63 lower number means higher quality
         config.fb_count = 2;
     } 
     else {
@@ -85,7 +85,7 @@ void shutdown_websocket(){
 }
 
 void setup_wifi() { 
-    IPAddress staticIP(192, 168, 1, 119);
+    IPAddress staticIP(192, 168, 1, 123);
     IPAddress gateway(192, 168, 1, 1); // = WiFi.gatewayIP();
     IPAddress subnet(255, 255, 255, 0); // = WiFi.subnetMask();
 //    IPAddress dns1(1, 1, 1, 1);
@@ -176,7 +176,7 @@ void http_resp(){
 void loop() {
     http_resp();
     webSocket.loop();
-
+    //START message
     if (isStartStreaming == 1 && isClientConnected == true){
           //capture a frame
           Serial.print('something');
@@ -187,11 +187,8 @@ void loop() {
           }
           webSocket.broadcastBIN(fb->buf, fb->len); // Broadcast can opened in many IPs
           
-//          String fb_encoded = base64::encode((uint8_t *) fb->buf, fb->len);
-//          uint8_t* payload =  (uint8_t *)fb_encoded.c_str();
-//          webSocket.broadcastBIN(payload, fb_encoded.length()); 
-          
           //return the frame buffer back to be reused
           esp_camera_fb_return(fb);
     }
+    //STOP message
 }
