@@ -11,8 +11,8 @@
 #include "camera_index.h"
 #define USE_SERIAL Serial
 
-const char* ssid =      "MINHDUC";        // Please change ssid & password
-const char* password =  "17011994";
+const char* ssid =      "HOTSPOT";        // Please change ssid & password
+const char* password =  "88888888";
 int isStartStreaming = 0;
 
 
@@ -85,15 +85,15 @@ void shutdown_websocket(){
 }
 
 void setup_wifi() { 
-    IPAddress staticIP(192, 168, 1, 123);
-    IPAddress gateway(192, 168, 1, 1); // = WiFi.gatewayIP();
-    IPAddress subnet(255, 255, 255, 0); // = WiFi.subnetMask();
+//    IPAddress staticIP(192, 168, 1, 123);
+//    IPAddress gateway(192, 168, 1, 1); // = WiFi.gatewayIP();
+//    IPAddress subnet(255, 255, 255, 0); // = WiFi.subnetMask();
 //    IPAddress dns1(1, 1, 1, 1);
 //    IPAddress dns2(8, 8, 8, 8);
 //
-    if (!WiFi.config(staticIP, gateway, subnet)) {
-        Serial.print("Wifi configuration for static IP failed!");
-    }
+//    if (!WiFi.config(staticIP, gateway, subnet)) {
+//        Serial.print("Wifi configuration for static IP failed!");
+//    }
 
     WiFi.begin(ssid, password);
     //WiFi.softAP(ssid, password);  // Using wifi from access point in ESP32
@@ -179,7 +179,7 @@ void loop() {
     //START message
     if (isStartStreaming == 1 && isClientConnected == true){
           //capture a frame
-          Serial.print('something');
+          Serial.println("Sending..");
           camera_fb_t * fb = esp_camera_fb_get();
           if (!fb) {
               Serial.println("Frame buffer could not be acquired");
